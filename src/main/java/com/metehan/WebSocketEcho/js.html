@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Echo Demo</title>
+</head>
+<body>
+
+<script type="text/javascript">
+    var socket = new WebSocket('ws://localhost:8080/websocket-demo');
+
+    socket.onopen = function (event) {
+        console.log('Connected');
+    };
+
+    socket.onmessage = function (event) {
+        displayMessage('Received message: ' + event.data);
+    };
+
+    function sendMessage() {
+        var message = document.getElementById('messageInput').value;
+        socket.send(message);
+    }
+
+    function sendToAll() {
+        fetch('http://localhost:8080/send')
+            .then(response => response.text())
+            .then(data => displayMessage(data));
+    }
+
+    function displayMessage(message) {
+        var messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML += '<p>' + message + '</p>';
+    }
+</script>
+
+<input type="text" id="messageInput" placeholder="Enter message">
+<button onclick="sendMessage()">Send Message</button>
+<button onclick="sendToAll()">Send to All Clients</button>
+
+<div id="messages"></div>
+
+</body>
+</html>
